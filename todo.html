@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Improved Todo Design</title>
+  </head>
+  <body class="bg-gray-100 flex justify-center items-center h-screen">
+    <div class="todo-container max-w-md w-full bg-white shadow-lg rounded-lg p-8">
+      <div class="flex space-x-3 mb-6">
+        <input
+          type="text"
+          class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          id="task"
+          placeholder="Add a new task"
+        />
+        <button
+          class="bg-green-500 text-white p-3 rounded-lg hover:bg-green-600 transition duration-300 ease-in-out"
+          id="add"
+        >
+          Add
+        </button>
+      </div>
+      <div class="content">
+        <ul class="space-y-3" id="list-items"></ul>
+      </div>
+    </div>
+
+    <script>
+      let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      const listItems = document.getElementById("list-items");
+
+      function renderTasks() {
+        listItems.innerHTML = "";
+        tasks.forEach((task, index) => {
+          let li = document.createElement("li");
+          li.classList.add(
+            "flex",
+            "items-center",
+            "justify-between",
+            "bg-gray-100",
+            "p-3",
+            "rounded-lg",
+            "hover:bg-gray-200",
+            "transition",
+            "duration-300",
+            "ease-in-out"
+          );
+          let span = document.createElement("span");
+          let button = document.createElement("button");
+
+          span.textContent = task;
+          button.textContent = "Remove";
+          button.classList.add("text-red-500", "hover:text-red-600");
+
+          button.addEventListener("click", () => {
+            tasks.splice(index, 1);
+            saveTasks();
+            renderTasks();
+          });
+
+          li.appendChild(span);
+          li.appendChild(button);
+          listItems.appendChild(li);
+        });
+      }
+
+      function saveTasks() {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+      }
+
+      document.getElementById("add").addEventListener("click", () => {
+        const task = document.getElementById("task").value;
+        if (task) {
+          tasks.push(task);
+          saveTasks();
+          renderTasks();
+          document.getElementById("task").value = "";
+        }
+      });
+
+      renderTasks();
+    </script>
+  </body>
+</html>
